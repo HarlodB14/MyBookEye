@@ -8,18 +8,10 @@ struct BookDoc: Decodable {
     let key: String
     let title: String
     let author_name: [String]?  // Updated to match the API response key
-    let cover_i: Int?
     let first_publish_year: Int?
     let edition_count: Int?
     let language: [String]?
     
-    // Computed property for cover image URL, returns nil if no cover available
-    var coverImageURL: String? {
-        if let coverID = cover_i {
-            return "https://covers.openlibrary.org/b/id/\(coverID)-L.jpg"
-        }
-        return nil
-    }
 
     // Computed property for the first author, or "Unknown Author" if no authors are found
     var authorName: String {

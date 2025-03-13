@@ -9,7 +9,6 @@ struct Book: Identifiable, Decodable {
     var key: String   // This is the unique identifier from the API
     var title: String
     var author_name: String
-    var coverImageURL: String?
     var firstPublishYear: String
     var editionCount: String
     var languageName: String

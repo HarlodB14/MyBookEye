@@ -33,7 +33,6 @@ struct BookService {
                     key: doc.key,
                     title: doc.title,
                     author_name: doc.author_name,
-                    coverImageURL: doc.coverImageURL,
                     firstPublishYear: doc.firstPublishYear,
                     editionCount: doc.editionCount,
                     languageName: doc.languageName
