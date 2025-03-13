@@ -15,9 +15,9 @@ struct BookService {
             print("Invalid URL: \(query)")
             throw URLError(.badURL)
         }
-
+        
         print("Fetching books with: \(url.absoluteString)")
-
+        
         
         // boek data ophalen
         let (data, response) = try await URLSession.shared.data(from: url)
@@ -26,22 +26,26 @@ struct BookService {
         }
         
         // Decode the data into an OpenLibraryResponse object
-        let apiResponse = try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
-        
-        // Response mappen naar een Boek
-        let books = apiResponse.docs.map { doc -> Book in
-            return Book(
-                key: doc.key,
-                title: doc.title,
-                authorName: doc.authorName,
-                coverImageURL: doc.coverImageURL,
-                firstPublishYear: doc.firstPublishYear,
-                editionCount: doc.editionCount,
-                languageName: doc.languageName
-            )
+        do {
+            let apiResponse = try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
+            let books = apiResponse.docs.map { doc -> Book in
+                return Book(
+                    key: doc.key,
+                    title: doc.title,
+                    author_name: doc.author_name,
+                    coverImageURL: doc.coverImageURL,
+                    firstPublishYear: doc.firstPublishYear,
+                    editionCount: doc.editionCount,
+                    languageName: doc.languageName
+                )
+            }
+            return books
+        } catch {
+            print("Error decoding response: \(error)")
+            print("Raw response data: \(String(data: data, encoding: .utf8) ?? "No data")")
+            throw error
         }
         
-        return books
     }
 }
 
