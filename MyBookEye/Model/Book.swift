@@ -8,7 +8,7 @@
 struct Book: Identifiable, Decodable {
     var key: String   // This is the unique identifier from the API
     var title: String
-    var author_name: [String]
+    var author_name: [String]?
     var firstPublishYear: Int?
     var editionCount: Int?
     var languageName: [String]?
@@ -17,5 +17,6 @@ struct Book: Identifiable, Decodable {
     var id: String {
         return key
     }
+   
 }
 

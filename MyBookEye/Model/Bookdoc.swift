@@ -7,7 +7,7 @@
 struct BookDoc: Decodable {
     let key: String
     let title: String
-    let author_name: [String]  
+    let author_name: [String]
     let first_publish_year: Int?
     let edition_count: Int?
     let language: [String]?
