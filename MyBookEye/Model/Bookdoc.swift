@@ -7,29 +7,49 @@
 struct BookDoc: Decodable {
     let key: String
     let title: String
-    let author_name: [String]?  // Updated to match the API response key
+    let author_name: [String]  
     let first_publish_year: Int?
     let edition_count: Int?
     let language: [String]?
+
+    // Custom initializer for safe decoding
+    init(from decoder: Decoder) throws {
+         let container = try decoder.container(keyedBy: CodingKeys.self)
+
+         key = try container.decode(String.self, forKey: .key)
+         title = try container.decode(String.self, forKey: .title)
+         
+         // Use decodeIfPresent for author_name to avoid issues if it's missing
+         author_name = try container.decodeIfPresent([String].self, forKey: .author_name) ?? ["Onbekende Auteur"]
+         
+         first_publish_year = try container.decodeIfPresent(Int.self, forKey: .first_publish_year)
+         edition_count = try container.decodeIfPresent(Int.self, forKey: .edition_count)
+         language = try container.decodeIfPresent([String].self, forKey: .language)
+     }
     
+    enum CodingKeys: String, CodingKey {
+        case key
+        case title
+        case author_name
+        case first_publish_year
+        case edition_count
+        case language
+    }
 
-    // Computed property for the first author, or "Unknown Author" if no authors are found
+    // Computed properties for safe fallback values
     var authorName: String {
-        return author_name?.first ?? "Onbekende Auteur"  // Safely unwrap the first author or return a default value
+        return author_name.first ?? "onbekende auteur"  // Default value if author_name is nil
     }
 
-    // Computed property for first publish year, or "Unknown Year" if no year is available
     var publishYear: String {
-        return first_publish_year.map { "\($0)" } ?? "Geen Datum beschikbaar"
+        return first_publish_year.map { "\($0)" } ?? "Datum onbekend"
     }
 
-    // Computed property for the number of editions, or "Unknown Edition Count"
     var editionCount: String {
         return edition_count.map { "\($0)" } ?? "Onbekende Editie"
     }
 
-    // Computed property for language, or "Unknown Language" if no language is found
     var languageName: String {
-        return language?.first ?? "Geen taal gevonden"
+        return language?.first ?? "Onbekende Taal"
     }
 }
