@@ -5,7 +5,7 @@
 //  Created by Harlod Bombala on 12/03/2025.
 //
 
-struct Book: Identifiable, Decodable {
+struct Book: Identifiable, Codable {
     var key: String   // This is the unique identifier from the API
     var title: String
     var author_name: [String]?
