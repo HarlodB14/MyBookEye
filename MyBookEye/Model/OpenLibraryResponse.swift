@@ -9,4 +9,5 @@ import Foundation
 
 struct OpenLibraryResponse: Decodable {
     let docs: [Book]
+    let numFound: Int
 }

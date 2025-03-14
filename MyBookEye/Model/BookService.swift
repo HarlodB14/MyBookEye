@@ -8,10 +8,10 @@ import Foundation
 
 struct BookService {
     
-    func fetchBooks(query: String) async throws -> [Book] {
-        //zoekquery opzetten en valideren
+    func fetchBooks(query: String, page: Int, itemsPerPage: Int) async throws -> (books: [Book], totalPages: Int) {
+        // Validate query and build URL for pagination
         guard let query = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-              let url = URL(string: "https://openlibrary.org/search.json?q=\(query)") else {
+              let url = URL(string: "https://openlibrary.org/search.json?q=\(query)&page=\(page)&limit=\(itemsPerPage)") else {
             print("Invalid URL: \(query)")
             throw URLError(.badURL)
         }
@@ -24,32 +24,28 @@ struct BookService {
         // Log the raw response data for inspection
         print(String(data: data, encoding: .utf8) ?? "No valid data returned")
 
-        // Proceed with decoding
-        _ = try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
+        // Decode the response
+        let apiResponse = try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
+        
+        // Calculate totalPages (assuming the API returns a total count of items)
+        let totalPages = (apiResponse.numFound / itemsPerPage) + (apiResponse.numFound % itemsPerPage == 0 ? 0 : 1)
 
-        
-        // Decode the data into an OpenLibraryResponse object
-        do {
-            let apiResponse = try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
-            let books = apiResponse.docs.map { doc -> Book in
-                return Book(
-                    key: doc.key,
-                    title: doc.title,
-                    author_name: doc.author_name,
-                    firstPublishYear: doc.firstPublishYear,
-                    editionCount: doc.editionCount,
-                    languageName: doc.languageName
-                )
-            }
-            return books
-        } catch {
-            print("Error decoding response: \(error)")
-            print("Raw response data: \(String(data: data, encoding: .utf8) ?? "No data")")
-            throw error
+        // Map API response to Book model
+        let books = apiResponse.docs.map { doc -> Book in
+            return Book(
+                key: doc.key,
+                title: doc.title,
+                author_name: doc.author_name,
+                firstPublishYear: doc.firstPublishYear,
+                editionCount: doc.editionCount,
+                languageName: doc.languageName
+            )
         }
-        
+
+        return (books, totalPages)
     }
 }
+
 
 
 
