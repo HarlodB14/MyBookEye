@@ -16,14 +16,17 @@ struct BookService {
             throw URLError(.badURL)
         }
         
-        print("Fetching books with: \(url.absoluteString)")
-        
-        
-        // boek data ophalen
         let (data, response) = try await URLSession.shared.data(from: url)
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw URLError(.badServerResponse)
         }
+
+        // Log the raw response data for inspection
+        print(String(data: data, encoding: .utf8) ?? "No valid data returned")
+
+        // Proceed with decoding
+        _ = try JSONDecoder().decode(OpenLibraryResponse.self, from: data)
+
         
         // Decode the data into an OpenLibraryResponse object
         do {
