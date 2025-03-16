@@ -6,14 +6,14 @@
 //
 
 struct Book: Identifiable, Decodable {
-    var key: String   // This is the unique identifier from the API
+    var key: String
     var title: String
     var author_name: [String]?
     var firstPublishYear: Int?
     var editionCount: Int?
     var languageName: [String]?
 
-    // Computed property to return key as id for Identifiable conformance
+
     var id: String {
         return key
     }
