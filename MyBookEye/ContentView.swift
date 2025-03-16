@@ -94,13 +94,11 @@ struct ContentView: View {
         .padding()
     }
 
-    // Fetch Books with Pagination Logic
     private func fetchBooks() async {
         isLoading = true
         errorMessage = nil
         
         do {
-            // Call to BookService to fetch books with pagination
             let (fetchedBooks, totalPages) = try await bookService.fetchBooks(query: query, page: currentPage, itemsPerPage: itemsPerPage)
             books = fetchedBooks
             self.totalPages = totalPages
