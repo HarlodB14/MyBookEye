@@ -19,7 +19,7 @@ struct BookmarksView: View {
                         }
                 }
             }
-            .navigationBarTitle("Bookmarks")
+            .navigationBarTitle("Favorieten")
         }
     }
 }

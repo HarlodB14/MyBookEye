@@ -43,7 +43,7 @@ struct ContentView: View {
             .navigationBarTitle("My Book Eye", displayMode: .inline)
             .navigationBarItems(trailing:
                 NavigationLink(destination: BookmarksView().environmentObject(bookmarkManager)) {
-                    Text("Bookmarks")
+                    Text("Favorieten")
                 }
             )
         }
