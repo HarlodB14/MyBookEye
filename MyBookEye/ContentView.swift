@@ -21,7 +21,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Toggle for switching between Search and Bookmarks
+                // Toggle voor switchen
                 Picker("Selecteer een tabblad", selection: $selectedTab) {
                     Text("Zoeken").tag(Tab.search)
                     Text("Favorieten").tag(Tab.bookmarks)
@@ -29,7 +29,7 @@ struct ContentView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
 
-                // Show content based on selected tab
+              
                 switch selectedTab {
                 case .search:
                     searchView
@@ -54,7 +54,7 @@ struct ContentView: View {
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
-            // Search Button
+     
             Button(action: {
                 Task {
                     await fetchBooks()
@@ -67,7 +67,7 @@ struct ContentView: View {
                     .cornerRadius(8)
             }
 
-            // Loading Indicator
+            
             if isLoading {
                 ProgressView()
             } else if let errorMessage = errorMessage {
@@ -76,7 +76,7 @@ struct ContentView: View {
                     .foregroundColor(.red)
                     .padding()
             } else {
-                // Display List of Books
+           
                 List(books, id: \.key) { book in
                     NavigationLink(destination: BookDetailView(book: book)) {
                         VStack(alignment: .leading) {
@@ -102,9 +102,9 @@ struct ContentView: View {
                 }
             }
 
-            // Pagination Controls
+     
             HStack {
-                // Previous Page Button
+              
                 Button("Previous") {
                     if currentPage > 1 {
                         currentPage -= 1
@@ -116,11 +116,10 @@ struct ContentView: View {
                 .disabled(currentPage == 1)
                 .padding()
 
-                // Current Page Info
+              
                 Text("Page \(currentPage) of \(totalPages)")
                     .padding()
 
-                // Next Page Button
                 Button("Next") {
                     if currentPage < totalPages {
                         currentPage += 1

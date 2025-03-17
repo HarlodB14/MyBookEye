@@ -43,12 +43,12 @@ struct BookmarkedBookView: View {
             Text(bookmarkedBook.book.author_name?.joined(separator: ", ") ?? "Unknown Author")
                 .font(.subheadline)
 
-            // Use TextEditor to edit notes
+            
             TextEditor(text: $editedNotes)
                 .frame(height: 80)
                 .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray.opacity(0.4)))
 
-            // Remove bookmark button
+            
             Button(role: .destructive) {
                 // Delete the bookmark using the BookmarkManager instance from @EnvironmentObject
                 bookmarkManager.deleteBookmark(id: bookmarkedBook.id)
@@ -58,8 +58,7 @@ struct BookmarkedBookView: View {
         }
         .padding(.vertical, 8)
         .onChange(of: editedNotes) { newNotes in
-            // Update the notes locally when the TextEditor content changes
-            // You could use this closure to notify the parent view, if necessary
+        
             if let index = bookmarkManager.bookmarks.firstIndex(where: { $0.id == bookmarkedBook.id }) {
                 bookmarkManager.bookmarks[index].notes = newNotes
                 bookmarkManager.saveBookmarks()

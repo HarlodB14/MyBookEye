@@ -32,7 +32,7 @@ class BookmarkManager: ObservableObject {
         saveBookmarks()
     }
 
-    // Save bookmarks to UserDefaults
+  
     public func saveBookmarks() {
         let encoder = JSONEncoder()
         if let data = try? encoder.encode(bookmarks) {

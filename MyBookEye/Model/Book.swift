@@ -6,7 +6,7 @@
 //
 
 struct Book: Identifiable, Codable {
-    var key: String   // This is the unique identifier from the API
+    var key: String
     var title: String
     var author_name: [String]?
     var firstPublishYear: Int?
