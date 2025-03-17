@@ -1,11 +1,16 @@
 import SwiftUI
 
+import SwiftUI
+
 struct ContentView: View {
     @State private var query: String = ""
     @State private var books: [Book] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var selectedTab: Tab = .search
+    @State private var currentPage: Int = 1
+    @State private var totalPages: Int = 1
+    @State private var itemsPerPage: Int = 10
 
     let bookService = BookService()
 
@@ -51,17 +56,10 @@ struct ContentView: View {
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
+            // Search Button
             Button(action: {
                 Task {
-                    isLoading = true
-                    errorMessage = nil
-                    do {
-                        let fetchedBooks = try await bookService.fetchBooks(query: query)
-                        books = fetchedBooks
-                    } catch {
-                        errorMessage = "Fout met het zoeken naar een boek"
-                    }
-                    isLoading = false
+                    await fetchBooks()
                 }
             }) {
                 Text("Search")
@@ -71,21 +69,22 @@ struct ContentView: View {
                     .cornerRadius(8)
             }
 
+            // Loading Indicator
             if isLoading {
                 ProgressView()
             } else if let errorMessage = errorMessage {
+                // Error Message
                 Text(errorMessage)
                     .foregroundColor(.red)
                     .padding()
             } else {
+                // Display List of Books
                 List(books, id: \.key) { book in
                     VStack(alignment: .leading) {
                         Text(book.title)
                             .font(.headline)
-
-                        Text(book.author_name?.joined(separator: ", ") ?? "Onbekende Auteur")
+                        Text(book.author_name?.joined(separator: ", ") ?? "Onbekende Auteur")            
                             .font(.subheadline)
-
                         if let year = book.firstPublishYear {
                             Text("Gepubliceerd op \(year)")
                                 .font(.subheadline)
@@ -102,7 +101,54 @@ struct ContentView: View {
                     }
                 }
             }
+
+            // Pagination Controls
+            HStack {
+                // Previous Page Button
+                Button("Previous") {
+                    if currentPage > 1 {
+                        currentPage -= 1
+                        Task {
+                            await fetchBooks()
+                        }
+                    }
+                }
+                .disabled(currentPage == 1)
+                .padding()
+
+                // Current Page Info
+                Text("Page \(currentPage) of \(totalPages)")
+                    .padding()
+
+                // Next Page Button
+                Button("Next") {
+                    if currentPage < totalPages {
+                        currentPage += 1
+                        Task {
+                            await fetchBooks()
+                        }
+                    }
+                }
+                .disabled(currentPage == totalPages)
+                .padding()
+            }
         }
         .padding()
     }
+
+    private func fetchBooks() async {
+        isLoading = true
+        errorMessage = nil
+        
+        do {
+            let (fetchedBooks, totalPages) = try await bookService.fetchBooks(query: query, page: currentPage, itemsPerPage: itemsPerPage)
+            books = fetchedBooks
+            self.totalPages = totalPages
+        } catch {
+            errorMessage = "Failed to fetch books. Please try again."
+        }
+        
+        isLoading = false
+    }
 }
+

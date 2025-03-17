@@ -13,7 +13,7 @@ struct Book: Identifiable, Codable {
     var editionCount: Int?
     var languageName: [String]?
 
-    // Computed property to return key as id for Identifiable conformance
+
     var id: String {
         return key
     }

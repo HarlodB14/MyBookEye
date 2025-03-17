@@ -12,14 +12,12 @@ struct BookDoc: Decodable {
     let edition_count: Int?
     let language: [String]?
 
-    // Custom initializer for safe decoding
     init(from decoder: Decoder) throws {
          let container = try decoder.container(keyedBy: CodingKeys.self)
 
          key = try container.decode(String.self, forKey: .key)
          title = try container.decode(String.self, forKey: .title)
-         
-         // Use decodeIfPresent for author_name to avoid issues if it's missing
+
          author_name = try container.decodeIfPresent([String].self, forKey: .author_name) ?? ["Onbekende Auteur"]
          
          first_publish_year = try container.decodeIfPresent(Int.self, forKey: .first_publish_year)
@@ -36,9 +34,9 @@ struct BookDoc: Decodable {
         case language
     }
 
-    // Computed properties for safe fallback values
+
     var authorName: String {
-        return author_name.first ?? "onbekende auteur"  // Default value if author_name is nil
+        return author_name.first ?? "onbekende auteur"
     }
 
     var publishYear: String {
