@@ -16,12 +16,14 @@ class BookmarkManager: ObservableObject {
         loadBookmarks()
     }
 
-    // Add a new bookmark to the list
     func addBookmark(book: Book, notes: String) {
-        let bookmarkedBook = BookmarkedBook(book: book, notes: notes)
-        bookmarks.append(bookmarkedBook)
-        saveBookmarks()
+        if !bookmarks.contains(where: { $0.book.key == book.key }) {
+            let bookmarkedBook = BookmarkedBook(book: book, notes: notes)
+            bookmarks.append(bookmarkedBook)
+            saveBookmarks()
+        }
     }
+
     
 
 
