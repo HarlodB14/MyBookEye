@@ -17,6 +17,16 @@ struct Book: Identifiable, Codable {
     var id: String {
         return key
     }
+    //mapping naar json-key
+    
+    enum CodingKeys: String, CodingKey {
+          case key
+          case title
+          case author_name
+          case firstPublishYear = "first_publish_year"
+          case editionCount = "edition_count"
+          case languageName = "language"
+      }
    
 }
 

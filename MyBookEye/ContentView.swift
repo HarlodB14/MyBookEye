@@ -1,7 +1,5 @@
 import SwiftUI
 
-import SwiftUI
-
 struct ContentView: View {
     @State private var query: String = ""
     @State private var books: [Book] = []
@@ -80,17 +78,19 @@ struct ContentView: View {
             } else {
                 // Display List of Books
                 List(books, id: \.key) { book in
-                    VStack(alignment: .leading) {
-                        Text(book.title)
-                            .font(.headline)
-                        Text(book.author_name?.joined(separator: ", ") ?? "Onbekende Auteur")            
-                            .font(.subheadline)
-                        if let year = book.firstPublishYear {
-                            Text("Gepubliceerd op \(year)")
+                    NavigationLink(destination: BookDetailView(book: book)) {
+                        VStack(alignment: .leading) {
+                            Text(book.title)
+                                .font(.headline)
+                            Text(book.author_name?.joined(separator: ", ") ?? "Onbekende Auteur")
                                 .font(.subheadline)
+                            if let year = book.firstPublishYear {
+                                Text("Gepubliceerd op \(year)")
+                                    .font(.subheadline)
+                            }
                         }
+                        .padding()
                     }
-                    .padding()
                     .swipeActions {
                         Button {
                             bookmarkManager.addBookmark(book: book, notes: "Voeg hier notities toe")
@@ -151,4 +151,3 @@ struct ContentView: View {
         isLoading = false
     }
 }
-
