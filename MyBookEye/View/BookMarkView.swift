@@ -8,7 +8,7 @@ struct BookmarksView: View {
             List {
                 // Loop through the bookmarked books using ForEach
                 ForEach(bookmarkManager.bookmarks) { bookmarkedBook in
-                    // Use the dedicated BookmarkedBookView for each item
+                    // Pass BookmarkManager to BookmarkedBookView
                     BookmarkedBookView(bookmarkedBook: bookmarkedBook)
                         .onChange(of: bookmarkedBook.notes) { newNotes in
                             // Update the notes in the BookmarkManager whenever changed
@@ -24,7 +24,9 @@ struct BookmarksView: View {
     }
 }
 
+
 struct BookmarkedBookView: View {
+    @EnvironmentObject var bookmarkManager: BookmarkManager
     var bookmarkedBook: BookmarkedBook
     @State private var editedNotes: String
 
@@ -48,7 +50,8 @@ struct BookmarkedBookView: View {
 
             // Remove bookmark button
             Button(role: .destructive) {
-                // Add functionality to remove the bookmark here
+                // Delete the bookmark using the BookmarkManager instance from @EnvironmentObject
+                bookmarkManager.deleteBookmark(id: bookmarkedBook.id)
             } label: {
                 Label("Remove Bookmark", systemImage: "trash")
             }
@@ -57,6 +60,10 @@ struct BookmarkedBookView: View {
         .onChange(of: editedNotes) { newNotes in
             // Update the notes locally when the TextEditor content changes
             // You could use this closure to notify the parent view, if necessary
+            if let index = bookmarkManager.bookmarks.firstIndex(where: { $0.id == bookmarkedBook.id }) {
+                bookmarkManager.bookmarks[index].notes = newNotes
+                bookmarkManager.saveBookmarks()
+            }
         }
     }
 }
