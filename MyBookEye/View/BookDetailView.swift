@@ -9,7 +9,6 @@ struct BookDetailView: View {
                 .font(.largeTitle)
                 .padding()
 
-    
             if let authors = book.author_name?.joined(separator: ", ") {
                 Text("Auteur(s): \(authors)")
                     .font(.title2)
@@ -20,15 +19,9 @@ struct BookDetailView: View {
                     .padding(.bottom)
             }
 
-            if let year = book.firstPublishYear {
-                Text("Geplaatst in: \(Int(year))")
-                    .font(.title3)
-                    .padding(.bottom)
-            } else {
-                Text("Geplaatst in: Onbekend")
-                    .font(.title3)
-                    .padding(.bottom)
-            }
+            Text("Geplaatst in: \(formattedYear(from: book.firstPublishYear))")
+                .font(.title3)
+                .padding(.bottom)
 
             if let languages = book.languageName?.joined(separator: ", ") {
                 Text("Taal(en): \(languages)")
@@ -49,10 +42,22 @@ struct BookDetailView: View {
                     .font(.title3)
                     .padding(.bottom)
             }
-            
+
             Spacer()
         }
         .navigationTitle("Boek Details")
         .padding()
+    }
+
+    func formattedYear(from year: Int?) -> String {
+        guard let year = year,
+              let date = Calendar.current.date(from: DateComponents(year: year)) else {
+            return "Onbekend"
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy"
+        formatter.locale = Locale(identifier: "nl_NL")
+        return formatter.string(from: date)
     }
 }

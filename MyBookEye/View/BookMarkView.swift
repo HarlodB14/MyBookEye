@@ -19,7 +19,14 @@ struct BookmarksView: View {
                         }
                 }
             }
-            .navigationBarTitle("Favorieten")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("Favorieten")
+                        .font(.headline)
+                }
+            }
+
+
         }
     }
 }

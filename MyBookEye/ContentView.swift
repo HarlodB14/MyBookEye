@@ -38,12 +38,18 @@ struct ContentView: View {
                         .environmentObject(bookmarkManager) // Pass BookmarkManager to BookmarksView
                 }
             }
-            .navigationBarTitle("My Book Eye", displayMode: .inline)
-            .navigationBarItems(trailing:
-                NavigationLink(destination: BookmarksView().environmentObject(bookmarkManager)) {
-                    Text("Favorieten")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("My Book Eye")
+                        .font(.headline)
                 }
-            )
+
+                ToolbarItem(placement: .automatic) {
+                    NavigationLink(destination: BookmarksView().environmentObject(bookmarkManager)) {
+                        Text("Favorieten")
+                    }
+                }
+            }
         }
     }
 
@@ -85,7 +91,7 @@ struct ContentView: View {
                             Text(book.author_name?.joined(separator: ", ") ?? "Onbekende Auteur")
                                 .font(.subheadline)
                             if let year = book.firstPublishYear {
-                                Text("Gepubliceerd op \(year)")
+                                Text("Gepubliceerd op \(formattedYear(from: book.firstPublishYear))")
                                     .font(.subheadline)
                             }
                         }
@@ -149,4 +155,16 @@ struct ContentView: View {
         
         isLoading = false
     }
+    private func formattedYear(from year: Int?) -> String {
+        guard let year = year,
+              let date = Calendar.current.date(from: DateComponents(year: year)) else {
+            return "Onbekend"
+        }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy"
+        formatter.locale = Locale(identifier: "nl_NL")
+        return formatter.string(from: date)
+    }
+
 }
